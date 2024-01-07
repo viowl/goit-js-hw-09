@@ -19,7 +19,12 @@ function isFormValid() {
   const { email, message } = form;
   const emailIsValid = email.checkValidity();
   const messageIsValid = message.checkValidity();
-  return emailIsValid && messageIsValid;
+
+  // Перевірка на пусті поля
+  const emailIsEmpty = email.value.trim() === '';
+  const messageIsEmpty = message.value.trim() === '';
+
+  return emailIsValid && messageIsValid && !emailIsEmpty && !messageIsEmpty;
 }
 
 function handleFormSubmit(event) {
@@ -33,7 +38,13 @@ function handleFormSubmit(event) {
     localStorage.removeItem(feedbackFormStateKey);
     form.reset();
   } else {
-    alert('Please fill in all required fields with valid data.');
+    // Виведення повідомлення про порожні поля
+    if (form.email.value.trim() === '') {
+      alert('Please enter your email.');
+    }
+    if (form.message.value.trim() === '') {
+      alert('Please enter your message.');
+    }
   }
 }
 
