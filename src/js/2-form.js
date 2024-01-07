@@ -1,7 +1,6 @@
 const feedbackFormStateKey = 'feedback-form-state';
 const form = document.querySelector('.feedback-form');
 
-// Функція для збереження стану у локальне сховище
 function saveStateToLocalStorage() {
   const { email, message } = form;
   localStorage.setItem(feedbackFormStateKey, JSON.stringify({
@@ -10,32 +9,35 @@ function saveStateToLocalStorage() {
   }));
 }
 
-// Функція для завантаження збереженого стану з локального сховища
 function loadStateFromLocalStorage() {
   const savedState = JSON.parse(localStorage.getItem(feedbackFormStateKey) || '{}');
-  form.email.value = savedState.email || '';  // Якщо savedState.email === undefined, тоді використовується пустий рядок
+  form.email.value = savedState.email || '';
   form.message.value = savedState.message || '';
 }
 
-// Функція для обробки події submit форми
-function handleFormSubmit(event) {
-    event.preventDefault();
-  
-    // Перевірка, що всі поля обов'язкові
-    if (form.checkValidity()) {
-      const savedData = JSON.parse(localStorage.getItem(feedbackFormStateKey) || '{}');
-      console.log(savedData);
-  
-      localStorage.removeItem(feedbackFormStateKey);
-      form.reset();
-    } else {
-      alert('Please fill in all required fields.');
-    }
-  }
+function isFormValid() {
+  const { email, message } = form;
+  const emailIsValid = email.checkValidity();
+  const messageIsValid = message.checkValidity();
+  return emailIsValid && messageIsValid;
+}
 
-// Додавання слухачів подій до форми
+function handleFormSubmit(event) {
+  event.preventDefault();
+
+  // Перевірка, що всі поля коректні
+  if (isFormValid()) {
+    const savedData = JSON.parse(localStorage.getItem(feedbackFormStateKey) || '{}');
+    console.log(savedData);
+
+    localStorage.removeItem(feedbackFormStateKey);
+    form.reset();
+  } else {
+    alert('Please fill in all required fields with valid data.');
+  }
+}
+
 form.addEventListener('input', saveStateToLocalStorage);
 form.addEventListener('submit', handleFormSubmit);
 
-// Завантаження стану з локального сховища при завантаженні сторінки
 loadStateFromLocalStorage();
