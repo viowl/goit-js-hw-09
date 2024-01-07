@@ -19,14 +19,19 @@ function loadStateFromLocalStorage() {
 
 // Функція для обробки події submit форми
 function handleFormSubmit(event) {
-  event.preventDefault();
-
-  const savedData = JSON.parse(localStorage.getItem(feedbackFormStateKey) || '{}');
-  console.log(savedData);
-
-  localStorage.removeItem(feedbackFormStateKey);
-  form.reset();
-}
+    event.preventDefault();
+  
+    // Перевірка, що всі поля обов'язкові
+    if (form.checkValidity()) {
+      const savedData = JSON.parse(localStorage.getItem(feedbackFormStateKey) || '{}');
+      console.log(savedData);
+  
+      localStorage.removeItem(feedbackFormStateKey);
+      form.reset();
+    } else {
+      alert('Please fill in all required fields.');
+    }
+  }
 
 // Додавання слухачів подій до форми
 form.addEventListener('input', saveStateToLocalStorage);
